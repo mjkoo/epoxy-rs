@@ -44,3 +44,9 @@ A future version of the library may default to using this implementation.
 ## Can I draw to a `GtkGLArea` using `glium`?
 
 Hopefully soon.
+
+## The bindings are missing some functions!
+
+Try upgrading to libepoxy 1.3.1, current version in the Ubuntu repository is
+1.2. Grabbing the xenial debs from
+https://launchpad.net/ubuntu/xenial/amd64/libepoxy0/1.3.1-1 worked for me.
