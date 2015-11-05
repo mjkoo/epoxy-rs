@@ -6,7 +6,7 @@ description = "Rust bindings for libepoxy, an OpenGL function pointer manager."
 repository = "https://github.com/mjkoo/epoxy-rs"
 license = "Apache-2.0" 
 keywords = ["epoxy", "libepoxy", "opengl", "gl", "gtk"]
-build = "build.rs"
+build = "build/main.rs"
 
 [build-dependencies]
 gl_generator = "^0.1"
