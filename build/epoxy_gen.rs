@@ -44,8 +44,8 @@ impl gl_generator::generators::Generator for EpoxyGenerator {
 fn write_header<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
     writeln!(dest, r#"
         mod __gl_imports {{
-            extern crate gl_common;
-            extern crate libc;
+            pub extern crate gl_common;
+            pub extern crate libc;
             pub use std::mem;
             pub use std::ptr;
             pub use std::process::exit;
