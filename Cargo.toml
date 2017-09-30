@@ -6,7 +6,7 @@ keywords = ["epoxy", "libepoxy", "opengl", "gl", "gtk"]
 license = "Apache-2.0"
 name = "epoxy"
 repository = "https://github.com/mjkoo/epoxy-rs"
-version = "0.0.2"
+version = "0.0.3"
 
 [build-dependencies]
 gl_generator = "0.5.3"
