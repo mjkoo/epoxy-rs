@@ -1,17 +1,22 @@
 [package]
-name = "epoxy"
-version = "0.0.2"
 authors = ["Maxwell Koo <mjkoo90@gmail.com>"]
-description = "Rust bindings for libepoxy, an OpenGL function pointer manager."
-repository = "https://github.com/mjkoo/epoxy-rs"
-license = "Apache-2.0" 
-keywords = ["epoxy", "libepoxy", "opengl", "gl", "gtk"]
 build = "build/main.rs"
+description = "Rust bindings for libepoxy, an OpenGL function pointer manager."
+keywords = ["epoxy", "libepoxy", "opengl", "gl", "gtk"]
+license = "Apache-2.0"
+name = "epoxy"
+repository = "https://github.com/mjkoo/epoxy-rs"
+version = "0.0.2"
 
 [build-dependencies]
-gl_generator = "^0.1"
-khronos_api = "^0"
+gl_generator = "0.5.3"
 
 [dependencies]
-libc = "^0.1"
+gl = "0.6.2"
 gl_common = "^0.1"
+libc = "^0.2"
+shared_library = "0.1.5"
+
+[features]
+default = ["gl_generator/unstable_generator_utils"]
+debug_marker = []
