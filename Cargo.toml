@@ -10,6 +10,7 @@ version = "0.0.3"
 
 [build-dependencies]
 gl_generator = "0.5.3"
+pkg-config = "0.3"
 
 [dependencies]
 gl = "0.6.2"

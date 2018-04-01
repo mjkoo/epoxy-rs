@@ -1,6 +1,7 @@
 // Based on `glium`'s build/main.rs
 
 extern crate gl_generator;
+extern crate pkg_config;
 
 mod epoxy_gen;
 
@@ -19,6 +20,8 @@ fn main() {
 
     let mut file = BufWriter::new(File::create(&dest.join("bindings.rs")).unwrap());
     generate_gl_bindings(&mut file);
+
+    let _ = pkg_config::Config::new().probe("epoxy").unwrap();
 }
 
 fn generate_gl_bindings<W>(dest: &mut W) where W: Write {
