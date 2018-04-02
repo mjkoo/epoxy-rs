@@ -7,7 +7,6 @@ license = "Apache-2.0"
 name = "epoxy"
 repository = "https://github.com/mjkoo/epoxy-rs"
 version = "0.0.4"
-publish = false
 
 [build-dependencies]
 gl_generator = "0.9"
