@@ -47,7 +47,6 @@ fn write_header<W>(dest: &mut W) -> io::Result<()>
     writeln!(dest,
              r#"
         mod __gl_imports {{
-            pub extern crate gl_common;
             pub extern crate libc;
             pub use std::mem;
             pub use std::ptr;
@@ -266,10 +265,6 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
     }
 
     writeln!(dest, "
-        }}
-        #[allow(dead_code)]
-        pub fn load<T: __gl_imports::gl_common::GlFunctionsSource>(loader: &T) {{
-            load_with(|name| loader.get_proc_addr(name) as _);
         }}
     ")
 }

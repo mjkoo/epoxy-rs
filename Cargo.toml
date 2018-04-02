@@ -9,13 +9,12 @@ repository = "https://github.com/mjkoo/epoxy-rs"
 version = "0.0.3"
 
 [build-dependencies]
-gl_generator = "0.5.3"
+gl_generator = "0.9"
+pkg-config = "0.3"
 
 [dependencies]
-gl = "0.6.2"
-gl_common = "^0.1"
-libc = "^0.2"
-shared_library = "0.1.5"
+libc = "0.2"
+shared_library = "0.1"
 
 [features]
 default = ["gl_generator/unstable_generator_utils"]
