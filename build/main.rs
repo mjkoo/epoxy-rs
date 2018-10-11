@@ -37,6 +37,7 @@ fn generate_gl_bindings<W>(dest: &mut W) where W: Write {
             "GL_ARB_depth_texture",
             "GL_ARB_direct_state_access",
             "GL_ARB_draw_buffers",
+            "GL_ARB_draw_buffers_blend",
             "GL_ARB_ES2_compatibility",
             "GL_ARB_ES3_compatibility",
             "GL_ARB_ES3_1_compatibility",
