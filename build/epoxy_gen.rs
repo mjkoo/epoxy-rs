@@ -24,17 +24,17 @@ impl Generator for EpoxyGenerator {
     fn write<W>(&self, registry: &Registry, dest: &mut W) -> io::Result<()>
         where W: io::Write
     {
-        try!(write_header(dest));
-        try!(write_metaloadfn(dest));
-        try!(write_type_aliases(registry, dest));
-        try!(write_enums(registry, dest));
-        try!(write_fns(registry, dest));
-        try!(write_fnptr_struct_def(dest));
-        try!(write_ptrs(registry, dest));
-        try!(write_fn_mods(registry, dest));
-        try!(write_error_fns(dest));
-        try!(write_load_fn(registry, dest));
-        try!(write_get_proc_addr(registry, dest));
+        write_header(dest)?;
+        write_metaloadfn(dest)?;
+        write_type_aliases(registry, dest)?;
+        write_enums(registry, dest)?;
+        write_fns(registry, dest)?;
+        write_fnptr_struct_def(dest)?;
+        write_ptrs(registry, dest)?;
+        write_fn_mods(registry, dest)?;
+        write_error_fns(dest)?;
+        write_load_fn(registry, dest)?;
+        write_get_proc_addr(registry, dest)?;
         Ok(())
     }
 }
@@ -81,13 +81,13 @@ fn write_metaloadfn<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 fn write_type_aliases<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
     where W: io::Write
 {
-    try!(writeln!(dest,
+    writeln!(dest,
                   r#"
         pub mod types {{
             #![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]
-    "#));
+    "#)?;
 
-    try!(gen_types(registry.api, dest));
+    gen_types(registry.api, dest)?;
 
     writeln!(dest,
              "
@@ -100,7 +100,7 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
     where W: io::Write
 {
     for enm in &registry.enums {
-        try!(gen_enum_item(enm, "types::", dest));
+        gen_enum_item(enm, "types::", dest)?;
     }
 
     Ok(())
@@ -113,10 +113,10 @@ fn write_enums<W>(registry: &Registry, dest: &mut W) -> io::Result<()>
 fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
     for c in &registry.cmds {
         if let Some(v) = registry.aliases.get(&c.proto.ident) {
-            try!(writeln!(dest, "/// Fallbacks: {}", v.join(", ")));
+            writeln!(dest, "/// Fallbacks: {}", v.join(", "))?;
         }
 
-        try!(writeln!(dest, r#"
+        writeln!(dest, r#"
             #[allow(non_snake_case, unused_variables, dead_code)] #[inline]
             pub unsafe fn {name}({params}) -> {return_suffix} {{
                 __gl_imports::mem::transmute::<_, extern "system" fn({typed_params}) -> {return_suffix}>
@@ -127,7 +127,7 @@ fn write_fns<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io
             typed_params = gen_parameters(c, false, true).join(", "),
             return_suffix = gen_return_type(c),
             idents = gen_parameters(c, true, false).join(", "),
-        ));
+        )?;
     }
 
     Ok(())
@@ -173,20 +173,20 @@ fn write_fnptr_struct_def<W>(dest: &mut W) -> io::Result<()> where W: io::Write 
 
 /// Creates a `storage` module which contains a static `FnPtr` per GL command in the registry.
 fn write_ptrs<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    try!(writeln!(dest,
+    writeln!(dest,
         "mod storage {{
             #![allow(non_snake_case, non_upper_case_globals)]
             use super::PMISSING_FN_EXIT;
-            use super::FnPtr;"));
+            use super::FnPtr;")?;
 
     for c in &registry.cmds {
-        try!(writeln!(dest,
+        writeln!(dest,
             "pub static mut {name}: FnPtr = FnPtr {{
                 pf: &PMISSING_FN_EXIT,
                 is_loaded: false,
             }};",
             name = c.proto.ident,
-        ));
+        )?;
     }
 
     writeln!(dest, "}}")
@@ -210,7 +210,7 @@ fn write_fn_mods<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
         let symbol = gen_symbol_name(registry.api, &c.proto.ident[..]);
         let symbol = &symbol[..];
 
-        try!(writeln!(dest, r#"
+        writeln!(dest, r#"
             #[allow(non_snake_case)]
             pub mod {fnname} {{
                 use super::{{storage, metaloadfn}};
@@ -230,7 +230,7 @@ fn write_fn_mods<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
             fnname = fnname,
             fallbacks = fallbacks,
             symbol = symbol,
-        ));
+        )?;
     }
 
     Ok(())
@@ -254,14 +254,14 @@ fn write_error_fns<W>(dest: &mut W) -> io::Result<()> where W: io::Write {
 ///
 /// The function calls `load_with` in each module created by `write_fn_mods`.
 fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    try!(writeln!(dest, r#"
+    writeln!(dest, r#"
         #[allow(dead_code)]
         pub fn load_with<F>(mut loadfn: F) where F: FnMut(&str) -> *const __gl_imports::raw::c_void {{
-    "#));
+    "#)?;
 
     for c in &registry.cmds {
-        try!(writeln!(dest, "{name}::load_with(|s| loadfn(s));",
-                      name = &c.proto.ident[..]));
+        writeln!(dest, "{name}::load_with(|s| loadfn(s));",
+                      name = &c.proto.ident[..])?;
     }
 
     writeln!(dest, "
@@ -273,18 +273,18 @@ fn write_load_fn<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W
 ///
 /// The function adds in a layer of indirection, but allows compatibility with the `gl` crate
 fn write_get_proc_addr<W>(registry: &Registry, dest: &mut W) -> io::Result<()> where W: io::Write {
-    try!(writeln!(dest, r#"
+    writeln!(dest, r#"
         #[allow(dead_code)]
         pub fn get_proc_addr(symbol: &str) -> *const __gl_imports::raw::c_void {{
             match &symbol[..] {{
-    "#));
+    "#)?;
 
     for c in &registry.cmds {
-        try!(writeln!(dest, r#"
+        writeln!(dest, r#"
             "{symbol}" => {name} as *const __gl_imports::raw::c_void,"#,
             symbol = gen_symbol_name(registry.api, &c.proto.ident[..]),
             name = &c.proto.ident[..],
-        ));
+        )?;
     }
 
     writeln!(dest, r#"
