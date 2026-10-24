@@ -2,21 +2,21 @@
 authors = ["Maxwell Koo <mjkoo90@gmail.com>"]
 build = "build/main.rs"
 description = "Rust bindings for libepoxy, an OpenGL function pointer manager."
+edition = "2024"
 keywords = ["epoxy", "libepoxy", "opengl", "gl", "gtk"]
 license = "Apache-2.0"
 name = "epoxy"
+publish = false
 repository = "https://github.com/mjkoo/epoxy-rs"
 version = "0.1.0"
-publish = false
 
 [build-dependencies]
-gl_generator = "0.9"
-pkg-config = "0.3"
+gl_generator = "0.14.0"
+pkg-config = "0.3.34"
 
 [dependencies]
-libc = "0.2"
-shared_library = "0.1"
+libc = "0.2.191"
 
 [features]
-default = ["gl_generator/unstable_generator_utils"]
 debug_marker = []
+default = ["gl_generator/unstable_generator_utils"]
